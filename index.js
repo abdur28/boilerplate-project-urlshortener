@@ -24,12 +24,15 @@ app.get('/', function(req, res) {
 app.post('/api/shorturl', function(req, res) {  
   const url = req.body.url;
   try {
-    const validUrl = new URL(url); // Validate the URL
+    const validUrl = new URL(url);
+    if (validUrl.protocol !== 'http:' && validUrl.protocol !== 'https:') {
+      throw new Error('Invalid protocol');
+    }
     urlDatabase[urlCounter] = validUrl.href;
     res.json({ original_url: validUrl.href, short_url: urlCounter });
     urlCounter++;
   } catch (err) {
-    res.json({ error: 'invalid URL' });
+    res.json({ error: 'invalid url' });
   }
 });
 
